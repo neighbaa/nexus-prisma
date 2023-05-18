@@ -52,16 +52,16 @@ export const createModule = (params) => {
       `;
     const importSpecifierToNexusPrismaSourceDirectory = esm ? `nexus-prisma/dist-esm` : `nexus-prisma/dist-cjs`;
     const imports = esm
-        ? dedent `
-        import { getPrismaClientDmmf } from '${importSpecifierToNexusPrismaSourceDirectory}/helpers/prisma'
-        import { ModuleGenerators } from '${importSpecifierToNexusPrismaSourceDirectory}/generator/ModuleGenerators/index'
-        import * as RuntimeSettings from '${importSpecifierToNexusPrismaSourceDirectory}/generator/Settings/Runtime/index'
-      `
-        : dedent `
-        const { getPrismaClientDmmf } = require('${importSpecifierToNexusPrismaSourceDirectory}/helpers/prisma')
-        const { ModuleGenerators } = require('${importSpecifierToNexusPrismaSourceDirectory}/generator/ModuleGenerators/index')
-        const RuntimeSettings = require('${importSpecifierToNexusPrismaSourceDirectory}/generator/Settings/Runtime/index')
-      `;
+        ? dedent`
+            import { Prisma } from '@prisma/client'
+            import { ModuleGenerators } from '${importSpecifierToNexusPrismaSourceDirectory}/generator/ModuleGenerators/index'
+            import * as RuntimeSettings from '${importSpecifierToNexusPrismaSourceDirectory}/generator/Settings/Runtime/index'
+        `
+        : dedent`
+            const { Prisma } = require('@prisma/client')
+            const { ModuleGenerators } = require('${importSpecifierToNexusPrismaSourceDirectory}/generator/ModuleGenerators/index')
+            const RuntimeSettings = require('${importSpecifierToNexusPrismaSourceDirectory}/generator/Settings/Runtime/index')
+        `
     return {
         // TODO this is no longer used, just return content
         fileName: 'index.js',
@@ -71,14 +71,7 @@ export const createModule = (params) => {
       const gentimeSettingsData = ${JSON.stringify(gentimeSettings.data, null, 2)}
       const runtimeSettingsManager = RuntimeSettings.settings
 
-      const dmmf = getPrismaClientDmmf({
-        // JSON stringify the values to ensure proper escaping
-        // Details: https://github.com/prisma/nexus-prisma/issues/143
-        // TODO test that fails without this code
-        require: () => require(${JSON.stringify(gentimeSettings.data.prismaClientImportId)}),
-        importId: gentimeSettingsData.prismaClientImportId,
-        importIdResolved: require.resolve(${JSON.stringify(gentimeSettings.data.prismaClientImportId)})
-      })
+      const dmmf = Prisma.dmmf
 
       const nexusTypeDefConfigurations = ModuleGenerators.JS.createNexusTypeDefConfigurations(dmmf, {
         gentime: gentimeSettingsData,
