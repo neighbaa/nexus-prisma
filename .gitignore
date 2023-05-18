@@ -116,5 +116,5 @@ tests/__cache__
 .nexus-prisma
 .vercel
 
-!dist-cjs
+# !dist-cjs
 .yarn
