@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "skipLibCheck": true,
     "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo-cjs",
     "outDir": "dist-cjs",
     "module": "commonjs",
@@ -9,5 +10,6 @@
     "declaration": true,
     "declarationMap": false
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }
