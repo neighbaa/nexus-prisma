@@ -117,3 +117,4 @@ tests/__cache__
 .vercel
 
 !dist-cjs
+.yarn
